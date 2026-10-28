@@ -1,0 +1,400 @@
+/* ==========================================================================
+   Design tokens — FEDERG identity mapped onto the OceanPulse template
+   ========================================================================== */
+:root {
+  /* Brand (values taken from federg_logo.svg) */
+  --navy: #1f1f3f;       /* FEDERG top bar — text and dark surfaces */
+  --orange: #ff6400;     /* logo letters — accent only (white on it fails AA) */
+  --eu-blue: #233e90;    /* EU flag "E" in the logo — secondary colour */
+  --eu-yellow: #ffcd05;  /* EU flag stars — decorative only */
+
+  /* Template roles */
+  --ink: var(--navy);
+  --muted: #5f5f78;      /* navy-tinted grey, 6.2:1 on white */
+  --bg: #ffffff;
+  --surface: #f4f4f8;
+  --accent: var(--orange);
+  --navy-rgb: 31, 31, 63;
+
+  --radius-card: 26px;
+  --pad: clamp(20px, 2.2vw, 34px);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+  --stagger: 72ms;
+
+  /* Brand fill used by the highlighted headline word when no poster image is set */
+  --hl-fill: linear-gradient(115deg, var(--eu-blue) 0%, var(--navy) 100%);
+
+  --font: "Plus Jakarta Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (max-width: 768px) { :root { --pad: 20px; } }
+@media (max-width: 360px) { :root { --pad: 16px; } }
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video { display: block; max-width: 100%; }
+
+/* Component rules like `.notice { display:flex }` must not override the hidden attribute */
+[hidden] { display: none !important; }
+
+/* Scroll lock while the menu is open */
+body.nav-open { overflow: hidden; }
+
+/*
+  Focus ring: orange (brand accent) outside + navy inside. Orange alone on white is
+  2.97:1, just under the 3:1 WCAG asks for focus indicators; the navy ring fixes that
+  on light backgrounds and the orange carries it on dark ones (5.3:1 on navy).
+*/
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform .25s var(--ease-out);
+}
+.skip-link:focus { transform: translateY(0); }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Shared UI (used by many components, so global rather than scoped)
+   ========================================================================== */
+.container {
+  /* Same side gutter as the hero and footer; capped only on very wide screens */
+  width: min(100% - 2 * var(--pad), 1600px);
+  margin-inline: auto;
+}
+
+.section { padding-block: clamp(64px, 9vw, 128px); }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--eu-blue);
+}
+.eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.eyebrow--light { color: rgba(255, 255, 255, .82); }
+
+.h2 {
+  margin: 0;
+  font-size: clamp(1.85rem, 3.3vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -.022em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: clamp(16px, 1.15vw, 19px);
+  line-height: 1.75;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #fff;
+  font: 600 16px/1.2 var(--font);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .25s var(--ease-out), background .25s ease, color .25s ease;
+}
+.btn:hover { transform: translateY(-2px); background: var(--eu-blue); }
+.btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.btn--light { background: #fff; color: var(--navy); }
+.btn--light:hover { background: #ffeadb; }
+
+/* "Discover FEDERG"-style link: label + circled arrow (same as the hero CTA) */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 999px;
+}
+.link-arrow__icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, currentColor 55%, transparent);
+  transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s ease;
+}
+.link-arrow__icon svg {
+  width: 44%;
+  height: 44%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.link-arrow:hover .link-arrow__icon,
+.link-arrow:focus-visible .link-arrow__icon {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--navy);
+  transform: translateX(4px);
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Inner pages */
+.page-main {
+  padding-block: clamp(48px, 7vw, 104px);
+}
+.page-main:focus { outline: none; box-shadow: none; }
+.page-main > * + * { margin-top: clamp(56px, 7vw, 104px); }
+
+/* Content + sticky aside */
+.page-grid {
+  display: grid;
+  gap: 40px clamp(40px, 6vw, 96px);
+}
+@media (min-width: 1024px) {
+  .page-grid { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
+  .page-grid__aside { position: sticky; top: 32px; }
+}
+
+.aside-card {
+  padding: 28px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.aside-card + .aside-card { margin-top: 16px; }
+.aside-card h2 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--eu-blue);
+}
+.aside-card dl { margin: 0; display: grid; gap: 14px; }
+.aside-card dt { color: var(--muted); font-size: 14px; }
+.aside-card dd { margin: 2px 0 0; font-weight: 600; }
+.aside-card ul { margin: 0; padding: 0; list-style: none; }
+.aside-card li + li { border-top: 1px solid #e3e3ec; }
+.aside-card li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.aside-card li a::after { content: '→'; color: var(--accent); transition: transform .25s var(--ease-out); }
+.aside-card li a:hover { color: var(--eu-blue); }
+.aside-card li a:hover::after { transform: translateX(4px); }
+
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 100, 0, .45);
+  background: #fff7f1;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.notice::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  translate: 0 -1px;
+}
+
+.card-grid {
+  display: grid;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 720px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .card-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* Long-form Markdown content */
+.prose {
+  max-width: 70ch;
+  font-size: clamp(16px, 1.1vw, 18px);
+  line-height: 1.8;
+  color: #33334f;
+}
+.prose > :first-child { margin-top: 0; }
+.prose h2 {
+  margin: 2.2em 0 .6em;
+  color: var(--ink);
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+}
+.prose h3 { margin: 1.8em 0 .5em; color: var(--ink); font-size: 1.2rem; font-weight: 600; }
+.prose p, .prose ul, .prose ol { margin: 0 0 1.1em; }
+.prose li { margin-bottom: .4em; }
+.prose li::marker { color: var(--accent); }
+.prose strong { color: var(--ink); }
+.prose a {
+  color: var(--eu-blue);
+  text-decoration: underline 1.5px var(--accent);
+  text-underline-offset: 4px;
+}
+.prose blockquote {
+  margin: 1.8em 0;
+  padding: 18px 24px;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 18px 18px 0;
+  background: var(--surface);
+  color: var(--ink);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+.prose table { width: 100%; margin: 0 0 1.4em; border-collapse: collapse; font-size: .95em; }
+.prose th, .prose td { padding: 12px 14px; border-bottom: 1px solid #e3e3ec; text-align: left; }
+.prose th { color: var(--ink); font-weight: 600; }
+
+/* ==========================================================================
+   Scroll reveal (IntersectionObserver in BaseLayout adds .is-visible).
+   Only applied when JS runs (html.js), so content is never hidden without it.
+   ========================================================================== */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity .8s var(--ease-out), transform .9s var(--ease-out);
+  transition-delay: calc(var(--rd, 0) * 90ms);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Entrance animation (shared by every component, transform + opacity only)
+   ========================================================================== */
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes media-in {
+  from { opacity: 0; transform: translate3d(28px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes video-in {
+  from { opacity: 0; transform: scale(1.06); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.72); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes draw-line {
+  from { opacity: 0; transform: rotate(212deg) scaleX(0); }
+  to   { opacity: 1; transform: rotate(212deg) scaleX(1); }
+}
+@keyframes draw-line-right {
+  from { opacity: 0; transform: rotate(-32deg) scaleX(0); }
+  to   { opacity: 1; transform: rotate(-32deg) scaleX(1); }
+}
+
+.anim {
+  animation: fade-up .82s var(--ease-out) backwards;
+  animation-delay: calc(var(--d, 0) * var(--stagger));
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0s !important;
+  }
+  .anim { animation: none !important; opacity: 1 !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}

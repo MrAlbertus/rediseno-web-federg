@@ -1,0 +1,54 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import { formatRange, isoDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const events = await getCollection('events');
+  return events.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'events'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, start, end, format, location, organiser, excerpt } = entry.data;
+---
+
+<InnerLayout title={title} eyebrow="Event" lead={excerpt}>
+  <Fragment slot="meta">
+    <time datetime={isoDate(start)}>{formatRange(start, end)}</time>
+    <span class="tag">{format}</span>
+  </Fragment>
+
+  <article class="container page-grid">
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+    <aside class="page-grid__aside" data-reveal style="--rd:1" aria-label="Event details">
+      <div class="aside-card">
+        <h2>Details</h2>
+        <dl>
+          <div><dt>Date</dt><dd>{formatRange(start, end)}</dd></div>
+          <div><dt>Format</dt><dd>{format}</dd></div>
+          <div><dt>Location</dt><dd>{location}</dd></div>
+          <div><dt>Organiser</dt><dd>{organiser}</dd></div>
+        </dl>
+      </div>
+      <p class="notice aside-note">Training project: registration is not available.</p>
+      <div class="aside-card">
+        <h2>More</h2>
+        <ul>
+          <li><a href="/events">All events</a></li>
+          <li><a href="/news">News & Events</a></li>
+        </ul>
+      </div>
+    </aside>
+  </article>
+</InnerLayout>
+
+<style>
+  .aside-note { margin: 16px 0; }
+</style>

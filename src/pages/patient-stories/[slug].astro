@@ -1,0 +1,74 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import StoryCard from '../../components/StoryCard.astro';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories');
+  return stories.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'stories'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, name, age, country, condition, quote } = entry.data;
+const others = (await getCollection('stories')).filter((s) => s.id !== entry.id).slice(0, 2);
+---
+
+<InnerLayout title={title} eyebrow="Patient story" pageTitle={`${title} – ${name}'s story`}>
+  <Fragment slot="meta">
+    <span><strong>{name}</strong>{age && `, ${age}`} · {country}</span>
+    <span class="tag">{condition}</span>
+  </Fragment>
+
+  <article class="container story">
+    <blockquote class="story__quote" data-reveal>
+      <p>“{quote}”</p>
+    </blockquote>
+    <div class="prose story__body" data-reveal>
+      <Content />
+    </div>
+  </article>
+
+  {
+    others.length > 0 && (
+      <section class="container" aria-labelledby="others-title" data-pagefind-ignore>
+        <h2 class="h2 others-title" id="others-title" data-reveal>More stories</h2>
+        <ul class="card-grid">
+          {others.map((s, i) => (
+            <li data-reveal style={`--rd:${i}`}>
+              <StoryCard entry={s} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</InnerLayout>
+
+<style>
+  .story {
+    display: grid;
+    gap: clamp(32px, 4vw, 56px);
+    justify-items: center;
+  }
+  .story__quote {
+    max-width: 900px;
+    margin: 0;
+    padding-left: clamp(20px, 3vw, 36px);
+    border-left: 4px solid var(--accent);
+  }
+  .story__quote p {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .story__body { width: 100%; }
+  .others-title { margin-bottom: 32px; }
+</style>

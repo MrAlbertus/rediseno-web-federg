@@ -1,0 +1,175 @@
+---
+import { NAV_LINKS, SOCIALS, DISCLAIMER } from '../config/site';
+import Stars from './Stars.astro';
+
+const more = [
+  { label: 'Upcoming events', href: '/events' },
+  { label: 'Member activities', href: '/member-activities' },
+  { label: 'FEDERG representations', href: '/representations' },
+  { label: 'Our members', href: '/about/members' },
+  { label: 'Governance', href: '/about/governance' },
+  { label: 'Search', href: '/search' },
+];
+---
+
+<footer class="footer">
+  <div class="footer__card">
+    <Stars size="520px" x="100%" y="0%" opacity={0.18} spin={false} />
+
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="footer__logo" href="/">
+          <img src="/federg_logo.svg" alt="FEDERG" width="250" height="50" loading="lazy" />
+        </a>
+        <p>
+          The non-profit federation of European associations of patients affected by rare and/or
+          genetic kidney diseases.
+        </p>
+        <div class="footer__socials">
+          {
+            SOCIALS.map((s) => (
+              <a href={s.href} aria-label={s.label}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d={s.path} />
+                </svg>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <nav class="footer__nav" aria-label="Footer">
+        <div>
+          <h2>Explore</h2>
+          <ul>{NAV_LINKS.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+        <div>
+          <h2>More</h2>
+          <ul>{more.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__disclaimer">
+        <strong>{DISCLAIMER}.</strong> All content is sample text; patient stories are fictional.
+      </p>
+      <p class="footer__copy">© {new Date().getFullYear()} · Built with Astro as a learning exercise</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    width: min(100%, 1600px + 2 * var(--pad));
+    margin-inline: auto;
+    padding: 0 var(--pad) var(--pad);
+    padding-bottom: max(var(--pad), env(safe-area-inset-bottom));
+  }
+  .footer__card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(40px, 6vw, 80px) clamp(24px, 5vw, 72px) clamp(28px, 3vw, 40px);
+    border-radius: var(--radius-card);
+    background: var(--navy);
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  /* Positioned so they paint above the decorative stars (which come first in the DOM) */
+  .footer__top,
+  .footer__bottom { position: relative; }
+
+  .footer__top {
+    display: grid;
+    gap: 48px;
+  }
+  @media (min-width: 860px) {
+    .footer__top { grid-template-columns: 1.1fr 1fr; }
+  }
+
+  /* The logo keeps its original colours, so it sits on a white chip */
+  .footer__logo {
+    display: inline-flex;
+    padding: 10px 16px;
+    border-radius: 14px;
+    background: #fff;
+  }
+  .footer__logo img { height: 30px; width: auto; }
+
+  .footer__brand p {
+    max-width: 42ch;
+    margin: 22px 0 0;
+    line-height: 1.7;
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: 22px;
+    margin-top: 26px;
+  }
+  .footer__socials a {
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.72);
+    border-radius: 6px;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .footer__socials a:hover { color: #fff; transform: translateY(-2px); }
+  .footer__socials svg { width: 22px; height: 22px; fill: currentColor; }
+
+  /* Two columns when there is room, one on very narrow phones (long words like "Collaborations") */
+  .footer__nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 32px;
+  }
+  .footer__nav h2 {
+    margin: 0 0 16px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer__nav ul { margin: 0; padding: 0; list-style: none; }
+  .footer__nav li + li { margin-top: 10px; }
+  .footer__nav a {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .footer__nav a:hover { color: var(--accent); }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    margin-top: clamp(40px, 5vw, 64px);
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 14px;
+  }
+  .footer__bottom p { margin: 0; }
+
+  .footer__disclaimer {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 100, 0, 0.6);
+    border-radius: 14px;
+    color: #fff;
+  }
+  .footer__disclaimer::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: 0 -1px;
+  }
+</style>

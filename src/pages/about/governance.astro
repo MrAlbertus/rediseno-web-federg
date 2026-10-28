@@ -1,0 +1,26 @@
+---
+import { getEntry, render } from 'astro:content';
+import InnerLayout from '../../layouts/InnerLayout.astro';
+
+const page = await getEntry('pages', 'governance');
+if (!page) throw new Error('Missing src/content/pages/governance.md');
+const { Content } = await render(page);
+---
+
+<InnerLayout title={page.data.title} eyebrow={page.data.eyebrow} lead={page.data.lead}>
+  <div class="container page-grid">
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+    <aside class="page-grid__aside" data-reveal style="--rd:1" aria-label="More about FEDERG">
+      <div class="aside-card">
+        <h2>About FEDERG</h2>
+        <ul>
+          <li><a href="/about">Who we are</a></li>
+          <li><a href="/about/members">Our members</a></li>
+          <li><a href="/collaborations">Collaborations</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</InnerLayout>

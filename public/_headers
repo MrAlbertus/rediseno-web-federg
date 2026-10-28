@@ -1,0 +1,7 @@
+# HTTP headers for Netlify / Cloudflare Pages (both read this file).
+# Training project: tell search engines not to index it, even if the
+# <meta name="robots"> tag is ever removed from the HTML.
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

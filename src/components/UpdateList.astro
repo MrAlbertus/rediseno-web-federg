@@ -1,0 +1,61 @@
+---
+/** Member activities / FEDERG representations: short updates rendered in full. */
+import { render, type CollectionEntry } from 'astro:content';
+import { formatDate, isoDate } from '../lib/content';
+
+interface Props {
+  updates: CollectionEntry<'updates'>[];
+}
+
+const { updates } = Astro.props;
+const rendered = await Promise.all(updates.map(async (u) => ({ entry: u, ...(await render(u)) })));
+---
+
+<div class="updates">
+  {
+    rendered.map(({ entry, Content }, i) => (
+      <article class="update" data-reveal style={`--rd:${i % 3}`}>
+        <time datetime={isoDate(entry.data.date)}>{formatDate(entry.data.date)}</time>
+        <h2>{entry.data.title}</h2>
+        <p class="update__excerpt">{entry.data.excerpt}</p>
+        <div class="prose update__body">
+          <Content />
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .updates {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 860px) {
+    .updates { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .update {
+    padding: clamp(24px, 3vw, 40px);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+  time {
+    color: var(--eu-blue);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  h2 {
+    margin: 10px 0 12px;
+    font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+  .update__excerpt {
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .update__body { font-size: 16px; }
+</style>

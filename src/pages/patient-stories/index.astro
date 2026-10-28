@@ -1,0 +1,33 @@
+---
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import { getStories } from '../../lib/content';
+
+const stories = await getStories();
+---
+
+<InnerLayout
+  title="Patient stories"
+  eyebrow="Real life, shared"
+  lead="Living with a rare kidney disease is different for everyone. These stories show some of those journeys."
+>
+  <div class="container">
+    <p class="notice" data-reveal>
+      All stories on this site are fictional and the people in them are invented. No real patient data
+      is used in this training project.
+    </p>
+    <ul class="card-grid card-grid--3 stories">
+      {
+        stories.map((entry, i) => (
+          <li data-reveal style={`--rd:${i % 3}`}>
+            <StoryCard entry={entry} headingLevel="h2" />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</InnerLayout>
+
+<style>
+  .stories { margin-top: 32px; }
+</style>

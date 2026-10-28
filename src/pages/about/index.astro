@@ -1,0 +1,39 @@
+---
+import { getEntry, render } from 'astro:content';
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import Pillars from '../../components/Pillars.astro';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing src/content/pages/about.md');
+const { Content } = await render(page);
+---
+
+<InnerLayout title={page.data.title} eyebrow={page.data.eyebrow} lead={page.data.lead} pageTitle="About FEDERG">
+  <div class="container page-grid">
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+    <aside class="page-grid__aside" data-reveal style="--rd:1" aria-label="More about FEDERG">
+      <div class="aside-card">
+        <h2>About FEDERG</h2>
+        <ul>
+          <li><a href="/about/members">Our members</a></li>
+          <li><a href="/about/governance">Governance</a></li>
+          <li><a href="/collaborations">Collaborations</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <section class="container" aria-labelledby="pillars-title">
+    <div data-reveal>
+      <p class="eyebrow">How we work</p>
+      <h2 class="h2 pillars-title" id="pillars-title">Four pillars</h2>
+    </div>
+    <Pillars />
+  </section>
+</InnerLayout>
+
+<style>
+  .pillars-title { margin-bottom: clamp(28px, 3vw, 44px); }
+</style>

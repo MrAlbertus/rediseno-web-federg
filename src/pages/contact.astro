@@ -1,0 +1,170 @@
+---
+import InnerLayout from '../layouts/InnerLayout.astro';
+import Stars from '../components/Stars.astro';
+import { SOCIALS } from '../config/site';
+---
+
+<InnerLayout
+  title="Contact"
+  eyebrow="Get in touch"
+  lead="Questions about FEDERG, membership or collaborations? Send us a message."
+>
+  <div class="container contact">
+    <div class="contact__info" data-reveal>
+      <Stars size="420px" x="100%" y="100%" opacity={0.25} spin={false} />
+      <div class="contact__info-inner">
+        <h2>FEDERG</h2>
+        <p>Federation of European associations of patients affected by rare and/or genetic kidney diseases.</p>
+        <dl>
+          <div>
+            <dt>Email</dt>
+            <dd>hello@example.org <span class="contact__sample">(sample address)</span></dd>
+          </div>
+          <div>
+            <dt>Based in</dt>
+            <dd>Europe</dd>
+          </div>
+        </dl>
+        <div class="contact__socials">
+          {
+            SOCIALS.map((s) => (
+              <a href={s.href} aria-label={s.label}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={s.path} /></svg>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!--
+      Demo form: there is no action and no submit button, so the browser never
+      sends (or puts in the URL) what people type. The button only shows a notice.
+    -->
+    <form class="contact__form" data-demo-form aria-describedby="form-notice" data-reveal style="--rd:1">
+      <p class="notice" id="form-notice">
+        This is a demo form for a training project. Nothing you type is sent or stored.
+      </p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="topic">Topic</label>
+        <select id="topic" name="topic">
+          <option>General question</option>
+          <option>Membership</option>
+          <option>Collaboration</option>
+          <option>Press</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6"></textarea>
+      </div>
+
+      <div class="contact__actions">
+        <button class="btn" type="button" data-demo-send>
+          Send message
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </button>
+        <p class="contact__status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+  </div>
+</InnerLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-demo-form]');
+  const status = form?.querySelector<HTMLElement>('.contact__status');
+  form?.addEventListener('submit', (e) => e.preventDefault());
+  form?.querySelector('[data-demo-send]')?.addEventListener('click', () => {
+    if (status) status.textContent = 'Demo only: your message was not sent.';
+  });
+</script>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 24px;
+  }
+  @media (min-width: 960px) {
+    .contact { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: start; }
+  }
+
+  .contact__info {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: var(--radius-card);
+    background: var(--navy);
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .contact__info-inner { position: relative; }
+  .contact__info h2 { margin: 0 0 12px; color: #fff; font-size: 1.6rem; font-weight: 600; }
+  .contact__info p { margin: 0; line-height: 1.7; }
+  .contact__info dl { display: grid; gap: 18px; margin: 32px 0 0; }
+  .contact__info dt { color: rgba(255, 255, 255, 0.66); font-size: 14px; }
+  .contact__info dd { margin: 4px 0 0; color: #fff; font-weight: 600; }
+  .contact__sample { color: rgba(255, 255, 255, 0.66); font-weight: 400; }
+  .contact__socials { display: flex; gap: 22px; margin-top: 32px; }
+  .contact__socials a {
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.75);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .contact__socials a:hover { color: #fff; transform: translateY(-2px); }
+  .contact__socials svg { width: 22px; height: 22px; fill: currentColor; }
+
+  .contact__form {
+    display: grid;
+    gap: 20px;
+    padding: clamp(24px, 4vw, 48px);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+  .field-row { display: grid; gap: 20px; }
+  @media (min-width: 640px) {
+    .field-row { grid-template-columns: 1fr 1fr; }
+  }
+  .field { display: grid; gap: 8px; }
+  label { font-weight: 600; font-size: 15px; }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #cfcfdc;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+    font: 400 16px/1.4 var(--font);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  textarea { resize: vertical; }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(255, 100, 0, 0.45);
+  }
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .contact__status { margin: 0; color: var(--eu-blue); font-weight: 600; }
+</style>

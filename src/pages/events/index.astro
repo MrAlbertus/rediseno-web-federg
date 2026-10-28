@@ -1,0 +1,28 @@
+---
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import EventList from '../../components/EventList.astro';
+import { getEvents } from '../../lib/content';
+
+const { upcoming, past } = await getEvents();
+---
+
+<InnerLayout
+  title="Events"
+  eyebrow="News & Events"
+  lead="Webinars, meetings and awareness days organised by FEDERG and its members."
+>
+  <section class="container" aria-labelledby="upcoming-title">
+    <SectionHead id="upcoming-title" eyebrow="Coming up" title="Upcoming events" />
+    {upcoming.length > 0 ? <EventList events={upcoming} /> : <p class="lead">No upcoming events right now.</p>}
+  </section>
+
+  {
+    past.length > 0 && (
+      <section class="container" aria-labelledby="past-title">
+        <SectionHead id="past-title" eyebrow="Archive" title="Past events" />
+        <EventList events={past} muted />
+      </section>
+    )
+  }
+</InnerLayout>

@@ -1,0 +1,72 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import { getNews, formatDate, isoDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const news = await getNews();
+  return news.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'news'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const more = (await getNews()).filter((n) => n.id !== entry.id).slice(0, 2);
+---
+
+<InnerLayout title={entry.data.title} eyebrow="News" lead={entry.data.excerpt}>
+  <Fragment slot="meta">
+    <time datetime={isoDate(entry.data.date)}>{formatDate(entry.data.date)}</time>
+    {entry.data.tags.map((t) => <span class="tag">{t}</span>)}
+  </Fragment>
+
+  <article class="container page-grid">
+    <div class="prose" data-reveal>
+      <Content />
+    </div>
+    <aside class="page-grid__aside" data-reveal style="--rd:1" aria-label="News navigation">
+      <div class="aside-card">
+        <h2>Keep reading</h2>
+        <ul>
+          <li><a href="/news">All news</a></li>
+          <li><a href="/events">Upcoming events</a></li>
+          <li><a href="/member-activities">Member activities</a></li>
+        </ul>
+      </div>
+    </aside>
+  </article>
+
+  {
+    more.length > 0 && (
+      <section class="container" aria-labelledby="more-title" data-pagefind-ignore>
+        <div class="more-head" data-reveal>
+          <h2 class="h2" id="more-title">More news</h2>
+          <ArrowLink href="/news" label="All news" />
+        </div>
+        <ul class="card-grid">
+          {more.map((n, i) => (
+            <li data-reveal style={`--rd:${i}`}>
+              <NewsCard entry={n} tone={i + 1} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</InnerLayout>
+
+<style>
+  .more-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+</style>

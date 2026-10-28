@@ -1,0 +1,8 @@
+[
+  { "id": "iberian-alport-network", "name": "Iberian Alport Patients Network", "country": "Spain", "focus": "Alport syndrome", "order": 1 },
+  { "id": "pkd-alliance-france", "name": "Polycystic Kidney Alliance", "country": "France", "focus": "Polycystic kidney disease", "order": 2 },
+  { "id": "cystinosis-families-italia", "name": "Cystinosis Families", "country": "Italy", "focus": "Cystinosis", "order": 3 },
+  { "id": "nephronophthisis-support-belgium", "name": "Nephronophthisis Support", "country": "Belgium", "focus": "Nephronophthisis", "order": 4 },
+  { "id": "rare-kidney-forum-portugal", "name": "Rare Kidney Patients Forum", "country": "Portugal", "focus": "aHUS and C3 glomerulopathy", "order": 5 },
+  { "id": "tubulopathy-group-greece", "name": "Tubulopathy Patients Group", "country": "Greece", "focus": "Gitelman and Bartter syndromes", "order": 6 }
+]

@@ -1,0 +1,20 @@
+---
+import InnerLayout from '../layouts/InnerLayout.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+---
+
+<InnerLayout
+  title="Page not found"
+  eyebrow="Error 404"
+  lead="The page you are looking for does not exist or has moved."
+  searchable={false}
+>
+  <div class="container links">
+    <ArrowLink href="/" label="Back to the home page" />
+    <ArrowLink href="/search" label="Search the site" />
+  </div>
+</InnerLayout>
+
+<style>
+  .links { display: flex; flex-wrap: wrap; gap: 24px 48px; }
+</style>

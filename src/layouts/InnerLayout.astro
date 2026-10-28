@@ -1,0 +1,32 @@
+---
+/**
+ * Layout for every page except the home: page header + <main>.
+ * <main> carries data-pagefind-body, so Pagefind indexes only the page
+ * content (never the nav or footer).
+ */
+import BaseLayout from './BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+
+interface Props {
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  /** <title> text when it should differ from the visible heading */
+  pageTitle?: string;
+  description?: string;
+  /** Include this page in the search index */
+  searchable?: boolean;
+}
+
+const { title, eyebrow, lead, pageTitle, description, searchable = true } = Astro.props;
+---
+
+<BaseLayout title={`${pageTitle ?? title} – FEDERG (training project)`} description={description ?? lead}>
+  <slot name="head" slot="head" />
+  <PageHeader title={title} eyebrow={eyebrow} lead={lead}>
+    <slot name="meta" />
+  </PageHeader>
+  <main id="content" tabindex="-1" class="page-main" data-pagefind-body={searchable ? '' : undefined}>
+    <slot />
+  </main>
+</BaseLayout>

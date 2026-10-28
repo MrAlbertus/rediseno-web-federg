@@ -1,0 +1,74 @@
+---
+/** The four pillars from FEDERG's mission statement. */
+const pillars = [
+  { title: 'Advocacy', text: 'Raising patients’ needs with European institutions and health authorities.' },
+  { title: 'Representation', text: 'A seat at the table in research networks, meetings and expert groups.' },
+  { title: 'Engagement', text: 'Helping member associations share knowledge, tools and good practice.' },
+  { title: 'Collaboration', text: 'Working alongside clinicians, researchers and other patient groups.' },
+];
+---
+
+<ul class="pillars">
+  {
+    pillars.map((p, i) => (
+      <li class="pillar" data-reveal style={`--rd:${i}`}>
+        <span class="pillar__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <h3>{p.title}</h3>
+        <p>{p.text}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .pillars {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1100px) {
+    .pillars { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .pillar {
+    padding: clamp(24px, 2.4vw, 34px);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    transition: background 0.35s ease, color 0.35s ease, transform 0.45s var(--ease-out);
+  }
+  .pillar:hover {
+    background: var(--navy);
+    color: #fff;
+    transform: translateY(-4px);
+  }
+  .pillar__num {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    transition: color 0.35s ease;
+  }
+  .pillar:hover .pillar__num { color: #fff; }
+  h3 {
+    margin: 22px 0 8px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+  }
+  p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+    transition: color 0.35s ease;
+  }
+  .pillar:hover p { color: rgba(255, 255, 255, 0.8); }
+</style>

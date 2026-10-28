@@ -1,0 +1,17 @@
+---
+import InnerLayout from '../layouts/InnerLayout.astro';
+import UpdateList from '../components/UpdateList.astro';
+import { getUpdates } from '../lib/content';
+
+const updates = await getUpdates('member-activity');
+---
+
+<InnerLayout
+  title="Member activities"
+  eyebrow="News & Events"
+  lead="Family days, awareness campaigns and newsletters from our member associations."
+>
+  <div class="container">
+    <UpdateList updates={updates} />
+  </div>
+</InnerLayout>

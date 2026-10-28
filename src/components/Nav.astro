@@ -1,0 +1,194 @@
+---
+import { NAV_LINKS } from '../config/site';
+
+interface Props {
+  /** Play the staggered entrance animation (home hero only). */
+  animate?: boolean;
+}
+
+const { animate = false } = Astro.props;
+const current = Astro.url.pathname;
+
+// Entrance indices: brand 2, links 4–8, search 9, burger 10 (3 stays unused, as in the template)
+const d = (n: number) => (animate ? `--d:${n}` : undefined);
+const isCurrent = (href: string) => current === href || current.startsWith(`${href}/`);
+---
+
+<nav class="nav" aria-label="Primary">
+  <a class="brand" href="/">
+    <img
+      class:list={['brand__logo', { anim: animate }]}
+      style={d(2)}
+      src="/federg_logo.svg"
+      alt="FEDERG"
+      width="250"
+      height="50"
+    />
+  </a>
+
+  <ul class="nav__links">
+    {
+      NAV_LINKS.map((link, i) => (
+        <li class:list={{ anim: animate }} style={d(4 + i)}>
+          <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+            {link.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <a class:list={['nav__search', { anim: animate }]} style={d(9)} href="/search" aria-label="Search">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="11" cy="11" r="6.5"></circle>
+      <path d="m20 20-4.2-4.2"></path>
+    </svg>
+  </a>
+
+  <button
+    class:list={['burger', { anim: animate }]}
+    style={d(10)}
+    id="navToggle"
+    type="button"
+    aria-label="Open menu"
+    aria-expanded="false"
+    aria-controls="navSheet"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+<style>
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 3.4vw, 58px);
+    padding-top: clamp(4px, 0.6vw, 10px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+    min-width: 0;
+    border-radius: 8px;
+  }
+  .brand__logo {
+    height: clamp(30px, 2.6vw, 38px);
+    width: auto;
+  }
+
+  /*
+    Five links do not fit next to the logo in the left column on most
+    laptops. Instead of guessing a viewport breakpoint, the list is a
+    size container: it takes the free space in the row and hides its
+    items when that space is too small. (The container lives on the <ul>,
+    not on .nav — containment creates a stacking context, and .nav must
+    not have one or the burger could not rise above the menu panel.)
+  */
+  .nav__links {
+    flex: 1 1 0;
+    min-width: 0;
+    container: navlinks / inline-size;
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 1.7vw, 32px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav__links a {
+    display: block;
+    padding: 6px 0;
+    color: var(--ink);
+    font-size: clamp(14px, 1.02vw, 17px);
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+    opacity: 0.88;
+    transition: opacity 0.2s ease;
+  }
+  .nav__links a:hover { opacity: 1; }
+  .nav__links a[aria-current='page'] {
+    opacity: 1;
+    text-decoration: underline 2px var(--accent);
+    text-underline-offset: 8px;
+  }
+
+  /* 5 links need ~570px at 1440px and ~680px once font and gap hit their max (measured) */
+  @container navlinks (max-width: 700px) {
+    .nav__links li { display: none; }
+  }
+
+  .nav__search {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 -6px 0 auto;
+    flex: 0 0 auto;
+    color: inherit;
+    border-radius: 50%;
+    opacity: 0.88;
+    transition: opacity 0.2s ease, transform 0.25s var(--ease-out);
+  }
+  .nav__search:hover { opacity: 1; transform: scale(1.08); }
+  .nav__search svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .burger {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 8px 0 8px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 70;
+    height: 30px;
+    transition: color 0.35s ease;
+  }
+  .burger span {
+    display: block;
+    width: 30px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transform-origin: center;
+    transition: transform 0.55s var(--ease-out), opacity 0.25s ease, width 0.45s var(--ease-out);
+  }
+  .burger:focus-visible { border-radius: 4px; }
+
+  /* Burger -> X morph (classes toggled by NavSheet's script) */
+  .burger:hover span:nth-child(2) { width: 22px; }
+  .burger.is-active span:nth-child(1) { transform: translateY(8.5px) rotate(45deg); }
+  .burger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+  .burger.is-active span:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
+  .burger.is-active:hover span:nth-child(2) { width: 30px; }
+  .burger.is-active { color: var(--ink); }
+  .burger.is-active.burger--on-panel { color: #fff; }
+
+  @media (max-width: 1024px) {
+    .nav__links { display: none; }
+  }
+
+  @media (max-width: 360px) {
+    .burger span { width: 26px; }
+    .brand__logo { height: 26px; }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import InnerLayout from '../../layouts/InnerLayout.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import EventList from '../../components/EventList.astro';
+import { getNews, getEvents } from '../../lib/content';
+
+const news = await getNews();
+const { upcoming } = await getEvents();
+
+const hubs = [
+  { href: '/events', title: 'Events', text: 'Webinars, meetings and awareness days.' },
+  { href: '/member-activities', title: 'Member activities', text: 'What our member associations are doing.' },
+  { href: '/representations', title: 'FEDERG representations', text: 'Where FEDERG speaks for patients.' },
+];
+---
+
+<InnerLayout
+  title="News & Events"
+  eyebrow="Stay informed"
+  lead="Updates from the federation, upcoming events and the work of our member associations."
+>
+  <nav class="container" aria-label="News & Events sections">
+    <ul class="hubs">
+      {
+        hubs.map((h, i) => (
+          <li data-reveal style={`--rd:${i}`}>
+            <a class="hub" href={h.href}>
+              <span class="hub__title">{h.title}</span>
+              <span class="hub__text">{h.text}</span>
+              <span class="hub__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <section class="container" aria-labelledby="upcoming-title">
+    <SectionHead id="upcoming-title" eyebrow="Events" title="Upcoming events" link={{ href: '/events', label: 'All events' }} />
+    <EventList events={upcoming.slice(0, 3)} />
+  </section>
+
+  <section class="container" aria-labelledby="latest-title">
+    <SectionHead id="latest-title" eyebrow="News" title="Latest news" />
+    <ul class="card-grid card-grid--3">
+      {
+        news.map((entry, i) => (
+          <li data-reveal style={`--rd:${i % 3}`}>
+            <NewsCard entry={entry} tone={i} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</InnerLayout>
+
+<style>
+  .hubs {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 860px) {
+    .hubs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .hub {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    height: 100%;
+    padding: 26px 64px 26px 28px;
+    border-radius: var(--radius-card);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.45s var(--ease-out);
+  }
+  .hub:hover {
+    background: var(--navy);
+    color: #fff;
+    transform: translateY(-4px);
+  }
+  .hub__title { font-size: 1.2rem; font-weight: 600; }
+  .hub__text { color: var(--muted); transition: color 0.3s ease; }
+  .hub:hover .hub__text { color: rgba(255, 255, 255, 0.8); }
+  .hub__arrow {
+    position: absolute;
+    right: 26px;
+    top: 50%;
+    translate: 0 -50%;
+    color: var(--accent);
+    font-size: 1.4rem;
+    transition: transform 0.25s var(--ease-out);
+  }
+  .hub:hover .hub__arrow { transform: translateX(4px); }
+</style>

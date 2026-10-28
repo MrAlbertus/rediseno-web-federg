@@ -1,0 +1,283 @@
+---
+import { NAV_LINKS, SOCIALS } from '../config/site';
+---
+
+<div class="navsheet" id="navSheet" inert>
+  <div class="navsheet__scrim" data-nav-close></div>
+  <nav class="navsheet__panel" aria-label="Menu">
+    <ul class="navsheet__list">
+      {
+        NAV_LINKS.map((link, i) => (
+          <li style={`--i:${i}`}>
+            <a class="navsheet__link" href={link.href}>
+              {link.label}
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="navsheet__foot">
+      <a class="navsheet__cta" href="/contact">
+        Get in touch
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+      <div class="navsheet__socials">
+        {
+          SOCIALS.map((s) => (
+            <a href={s.href} aria-label={s.label}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d={s.path} />
+              </svg>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .navsheet {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    visibility: hidden;
+    transition: visibility 0s linear 0.46s;
+  }
+  .navsheet.is-open {
+    visibility: visible;
+    transition: visibility 0s linear 0s;
+  }
+
+  .navsheet__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--navy-rgb), 0.45);
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
+    transition: opacity 0.32s ease, backdrop-filter 0.32s ease, -webkit-backdrop-filter 0.32s ease;
+  }
+  .is-open .navsheet__scrim {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: opacity 0.5s ease, backdrop-filter 0.6s ease, -webkit-backdrop-filter 0.6s ease;
+  }
+
+  .navsheet__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(100%, 460px);
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--pad) + 78px) clamp(24px, 6vw, 52px) calc(var(--pad) + 12px);
+    padding-bottom: max(calc(var(--pad) + 12px), env(safe-area-inset-bottom));
+    background: rgba(var(--navy-rgb), 0.92);
+    -webkit-backdrop-filter: blur(26px) saturate(150%);
+    backdrop-filter: blur(26px) saturate(150%);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: -30px 0 80px rgba(0, 0, 0, 0.35);
+    color: #fff;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateX(100%);
+    transition: transform 0.44s var(--ease-in);
+  }
+  /* Asymmetric on purpose: slow expo-out in, faster expo-in out */
+  .is-open .navsheet__panel {
+    transform: translateX(0);
+    transition: transform 0.68s var(--ease-out);
+  }
+
+  .navsheet__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .navsheet__list li { border-top: 1px solid rgba(255, 255, 255, 0.13); }
+  .navsheet__list li:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.13); }
+
+  .navsheet__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: clamp(15px, 2.4vh, 22px) 2px;
+    text-decoration: none;
+    color: #fff;
+    font-size: clamp(1.6rem, 7vw, 2.35rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.16s ease, transform 0.16s ease, color 0.25s ease;
+  }
+  /* Staggered reveal on open; on close the fast base transition applies */
+  .is-open .navsheet__link {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), color 0.25s ease;
+    transition-delay: calc(0.16s + var(--i) * 0.062s), calc(0.16s + var(--i) * 0.062s), 0s;
+  }
+  .navsheet__link svg {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+  }
+  .navsheet__link:hover,
+  .navsheet__link:focus-visible { color: var(--accent); }
+  .navsheet__link:hover svg,
+  .navsheet__link:focus-visible svg {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .navsheet__link:focus-visible {
+    outline: none;
+    box-shadow: none;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+  }
+
+  .navsheet__foot {
+    margin-top: auto;
+    padding-top: clamp(26px, 5vh, 48px);
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+  }
+  /* 5 links end at .16 + 4 × .062 ≈ .41s, so the foot lands just after */
+  .is-open .navsheet__foot {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    transition-delay: 0.48s;
+  }
+
+  .navsheet__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform 0.25s var(--ease-out), background 0.25s ease;
+  }
+  .navsheet__cta:hover {
+    transform: translateY(-2px);
+    background: #ffeadb;
+  }
+  .navsheet__cta svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .navsheet__socials {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin-top: clamp(22px, 4vh, 34px);
+  }
+  .navsheet__socials a {
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.72);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .navsheet__socials a:hover {
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  .navsheet__socials svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+  }
+
+  @media (max-width: 1024px) and (orientation: landscape) and (max-height: 540px) {
+    .navsheet__panel { padding-top: calc(var(--pad) + 64px); }
+    .navsheet__link { font-size: clamp(1.15rem, 4.6vh, 1.5rem); padding: 10px 2px; }
+    .navsheet__foot { padding-top: 18px; }
+    .navsheet__socials { margin-top: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .navsheet__link,
+    .navsheet__foot { transform: none; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('navToggle');
+  const sheet = document.getElementById('navSheet');
+  const panel = sheet?.querySelector<HTMLElement>('.navsheet__panel');
+
+  if (btn && sheet && panel) {
+    let isOpen = false;
+
+    // The panel is right-anchored and capped at 460px, so on wide screens it can
+    // stop short of the burger. Measure instead of guessing a breakpoint.
+    const syncBurgerContrast = () => {
+      const panelLeft = window.innerWidth - panel.getBoundingClientRect().width;
+      const onPanel = btn.getBoundingClientRect().right > panelLeft + 4;
+      btn.classList.toggle('burger--on-panel', onPanel);
+    };
+
+    const setOpen = (next: boolean) => {
+      if (next === isOpen) return;
+      isOpen = next;
+      if (next) syncBurgerContrast();
+      sheet.classList.toggle('is-open', next);
+      btn.classList.toggle('is-active', next);
+      document.body.classList.toggle('nav-open', next);
+      btn.setAttribute('aria-expanded', String(next));
+      btn.setAttribute('aria-label', next ? 'Close menu' : 'Open menu');
+      if (next) sheet.removeAttribute('inert');
+      else sheet.setAttribute('inert', '');
+    };
+
+    btn.addEventListener('click', () => setOpen(!isOpen));
+
+    sheet.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.hasAttribute('data-nav-close') || target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (isOpen && (e.key === 'Escape' || e.key === 'Esc')) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (isOpen) syncBurgerContrast();
+    });
+  }
+</script>

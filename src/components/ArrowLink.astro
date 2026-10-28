@@ -1,0 +1,16 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  /** Extra context for screen readers when the label alone is vague ("Read more") */
+  srLabel?: string;
+}
+const { href, label, srLabel } = Astro.props;
+---
+
+<a class="link-arrow" href={href}>
+  <span>{label}{srLabel && <span class="visually-hidden"> {srLabel}</span>}</span>
+  <span class="link-arrow__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+  </span>
+</a>

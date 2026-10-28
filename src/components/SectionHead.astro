@@ -1,0 +1,38 @@
+---
+import ArrowLink from './ArrowLink.astro';
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  link?: { href: string; label: string };
+  light?: boolean;
+}
+
+const { id, eyebrow, title, intro, link, light = false } = Astro.props;
+---
+
+<div class="section-head" data-reveal>
+  <div>
+    <p class:list={['eyebrow', { 'eyebrow--light': light }]}>{eyebrow}</p>
+    <h2 class="h2" id={id}>{title}</h2>
+    {intro && <p class:list={['lead', 'section-head__intro', { 'section-head__intro--light': light }]}>{intro}</p>}
+  </div>
+  {link && <div class="section-head__link"><ArrowLink href={link.href} label={link.label} /></div>}
+</div>
+
+<style>
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 48px;
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+  .section-head > div:first-child { max-width: 760px; }
+  .section-head__intro { margin-top: 18px; }
+  .section-head__intro--light { color: rgba(255, 255, 255, 0.8); }
+  .section-head__link { flex: 0 0 auto; }
+</style>

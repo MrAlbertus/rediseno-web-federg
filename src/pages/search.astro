@@ -1,0 +1,80 @@
+---
+/**
+ * Static search with Pagefind: `npm run build` creates dist/pagefind/
+ * (an index split into small chunks + a ready-made UI). The browser only
+ * downloads the chunks it needs, so there is no server or database.
+ */
+import InnerLayout from '../layouts/InnerLayout.astro';
+---
+
+<InnerLayout
+  title="Search"
+  eyebrow="Find it fast"
+  lead="Search news, events, patient stories and pages."
+  searchable={false}
+>
+  <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+
+  <div class="container">
+    <div id="search" class="search"></div>
+    <p class="notice search__dev" hidden>
+      The search index is created when the site is built. Run <code>npm run build</code> and then
+      <code>npm run preview</code> to try it.
+    </p>
+  </div>
+</InnerLayout>
+
+<script is:inline>
+  (function () {
+    var script = document.createElement('script');
+    script.src = '/pagefind/pagefind-ui.js';
+    script.onload = function () {
+      var ui = new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        autofocus: true,
+        resetStyles: false,
+      });
+      // Support links like /search?q=dialysis
+      var q = new URLSearchParams(location.search).get('q');
+      if (q) ui.triggerSearch(q);
+    };
+    script.onerror = function () {
+      document.querySelector('.search__dev').hidden = false;
+    };
+    document.body.appendChild(script);
+  })();
+</script>
+
+<style>
+  /* Pagefind UI is themed through its own CSS variables */
+  .search {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: #1f1f3f;
+    --pagefind-ui-text: #1f1f3f;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #cfcfdc;
+    --pagefind-ui-tag: #f4f4f8;
+    --pagefind-ui-border-width: 1.5px;
+    --pagefind-ui-border-radius: 18px;
+    --pagefind-ui-font: var(--font);
+    max-width: 860px;
+    /* Reserve the search box height so the page does not jump when the UI loads (CLS) */
+    min-height: 64px;
+  }
+  .search :global(.pagefind-ui__search-input) { font-weight: 500; }
+  .search :global(.pagefind-ui__search-input:focus) {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 100, 0, 0.45);
+  }
+  .search :global(.pagefind-ui__result-link) { color: var(--ink); }
+  .search :global(mark) { background: #ffe1cc; color: inherit; }
+  code {
+    overflow-wrap: anywhere;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.92em;
+  }
+</style>

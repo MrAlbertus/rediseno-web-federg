@@ -1,0 +1,17 @@
+---
+import InnerLayout from '../layouts/InnerLayout.astro';
+import UpdateList from '../components/UpdateList.astro';
+import { getUpdates } from '../lib/content';
+
+const updates = await getUpdates('representation');
+---
+
+<InnerLayout
+  title="FEDERG representations"
+  eyebrow="News & Events"
+  lead="Where FEDERG has represented patients with rare and genetic kidney diseases."
+>
+  <div class="container">
+    <UpdateList updates={updates} />
+  </div>
+</InnerLayout>
