@@ -7,6 +7,7 @@
 Rediseño de la web de FEDERG como sitio estático: moderno, rápido y accesible, conservando el logo y los colores corporativos.
 
 - **Web publicada:** https://fastidious-pony-0a539b.netlify.app
+- **Código:** https://github.com/MrAlbertus/rediseno-web-federg
 - **Stack:** [Astro](https://astro.build/) · contenido en Markdown (content collections) · búsqueda estática con [Pagefind](https://pagefind.app/) · Plus Jakarta Sans autoalojada (@fontsource)
 - **Lighthouse (móvil y escritorio, 8 páginas):** Rendimiento 100 · Accesibilidad 100 · Buenas prácticas 100 · SEO 63*
 
