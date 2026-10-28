@@ -75,8 +75,6 @@ Referencia medida en local antes de publicar (nueva web, 8 páginas): Rendimient
 
 ## 5. Aprendizajes, dificultades y qué haría distinto
 
-*(Esta parte la escribo yo. Preguntas guía:)*
-
 ### Aprendizajes
 - ¿Qué entiendo ahora sobre la diferencia entre una web dinámica y una estática que antes no entendía?
 - ¿Qué concepto nuevo me ha resultado más útil (componentes, Markdown y content collections, accesibilidad, rendimiento…)?
